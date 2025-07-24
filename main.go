@@ -2,7 +2,6 @@ package main
 
 import (
 	"customer-manager-api/src/config"
-	"customer-manager-api/src/database"
 	"customer-manager-api/src/router"
 	"fmt"
 	"log"
@@ -11,10 +10,6 @@ import (
 
 func main() {
 	config.LoadConfig()
-	_, err := database.ConnectDatabase()
-	if err != nil {
-		log.Fatal("Failed to connect to the database:", err)
-	}
 
 	fmt.Println("Starting Customer Manager API...")
 
