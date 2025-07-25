@@ -9,18 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDatabase() (*gorm.DB, error) {
+var DB *gorm.DB
 
-	db, err := gorm.Open(sqlserver.Open(config.StringConnection), &gorm.Config{})
+func ConnectDatabase() {
+
+	DB, err := gorm.Open(sqlserver.Open(config.StringConnection), &gorm.Config{})
 	if err != nil {
-		return nil, err
+		log.Fatal("Failed to connect to the database:", err)
 	}
 
 	// Migração automática
-	err = db.AutoMigrate(&models.User{})
+	err = DB.AutoMigrate(&models.User{})
 	if err != nil {
 		log.Fatal("Erro ao fazer a migração:", err)
 	}
-
-	return db, nil
 }

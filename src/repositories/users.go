@@ -14,11 +14,11 @@ func NewUsersRepository(db *gorm.DB) *users {
 	return &users{db: db}
 }
 
-func (u users) CreateUser(user models.User) (uint64, error) {
+func (u users) CreateUser(user models.User) (uint, error) {
 	result := u.db.Create(&user)
 	if result.Error != nil {
 		return 0, result.Error
 	}
 
-	return uint64(user.ID), nil
+	return user.ID, nil
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"customer-manager-api/src/config"
+	"customer-manager-api/src/database"
 	"customer-manager-api/src/router"
 	"fmt"
 	"log"
@@ -10,6 +11,8 @@ import (
 
 func main() {
 	config.LoadConfig()
+
+	database.ConnectDatabase()
 
 	fmt.Println("Starting Customer Manager API...")
 
