@@ -19,8 +19,8 @@ type User struct {
 	Password   string    `json:"password,omitempty" gorm:"type:varchar(255);not null"`
 }
 
-func (user *User) BeforeCreate() error {
-	if err := user.validate(); err != nil {
+func (user *User) PrepareToSave(isUpdate bool) error {
+	if err := user.validate(isUpdate); err != nil {
 		return err
 	}
 
@@ -29,7 +29,7 @@ func (user *User) BeforeCreate() error {
 	return nil
 }
 
-func (user *User) validate() error {
+func (user *User) validate(isUpdate bool) error {
 	if user.Name == "" {
 		return errors.New("name is required")
 	}
@@ -38,12 +38,8 @@ func (user *User) validate() error {
 		return errors.New("email is required")
 	}
 
-	if user.Password == "" {
+	if !isUpdate && user.Password == "" {
 		return errors.New("password is required")
-	}
-
-	if user.UniqueCode == uuid.Nil {
-		return errors.New("unique code is required")
 	}
 
 	return nil

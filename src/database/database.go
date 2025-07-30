@@ -12,8 +12,8 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
-
-	DB, err := gorm.Open(sqlserver.Open(config.StringConnection), &gorm.Config{})
+	var err error
+	DB, err = gorm.Open(sqlserver.Open(config.StringConnection), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to the database:", err)
 	}
