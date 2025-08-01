@@ -1,10 +1,12 @@
 package models
 
 import (
+	"customer-manager-api/src/security"
 	"errors"
 	"strings"
 	"time"
 
+	"github.com/badoux/checkmail"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -24,7 +26,9 @@ func (user *User) PrepareToSave(isUpdate bool) error {
 		return err
 	}
 
-	user.formatData()
+	if err := user.formatData(isUpdate); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -38,6 +42,10 @@ func (user *User) validate(isUpdate bool) error {
 		return errors.New("email is required")
 	}
 
+	if err := checkmail.ValidateFormat(user.Email); err != nil {
+		return errors.New("invalid email format")
+	}
+
 	if !isUpdate && user.Password == "" {
 		return errors.New("password is required")
 	}
@@ -45,8 +53,19 @@ func (user *User) validate(isUpdate bool) error {
 	return nil
 }
 
-func (user *User) formatData() {
+func (user *User) formatData(isUpdate bool) error {
 	user.Name = strings.TrimSpace(user.Name)
 	user.Email = strings.TrimSpace(user.Email)
 	user.Phone = strings.TrimSpace(user.Phone)
+
+	if !isUpdate {
+		hashedPassword, err := security.Hash(user.Password)
+		if err != nil {
+			return err
+		}
+
+		user.Password = string(hashedPassword)
+	}
+
+	return nil
 }
