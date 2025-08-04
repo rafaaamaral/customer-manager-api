@@ -68,3 +68,13 @@ func (u users) DeleteUser(id uint) error {
 
 	return nil
 }
+
+func (u users) GetUserByEmail(email string) (models.User, error) {
+	var user models.User
+	result := u.db.Where("email = ?", email).First(&user)
+	if result.Error != nil {
+		return models.User{}, result.Error
+	}
+
+	return user, nil
+}
