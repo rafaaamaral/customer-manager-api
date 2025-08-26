@@ -78,3 +78,14 @@ func (u users) GetUserByEmail(email string) (models.User, error) {
 
 	return user, nil
 }
+
+func (u users) UpdatePassword(userID uint, newPassword string) error {
+	result := u.db.Model(&models.User{}).Where("id = ?", userID).Update("password", newPassword)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("user with ID %d not found", userID)
+	}
+	return nil
+}
